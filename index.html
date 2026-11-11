@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="tr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#14110d" />
+    <link rel="icon" href="assets/marka/logo-C-ikon.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=Alegreya+Sans:wght@400;500;700;800&display=swap" rel="stylesheet" />
+    <title>Hükümdar · Yedi Kıta, Tek Taç</title>
+    <script type="module" crossorigin src="/hukumdar/assets/index-Brx3i6ct.js"></script>
+    <link rel="stylesheet" crossorigin href="/hukumdar/assets/index-CaAEWjJ1.css">
+  </head>
+  <body>
+    <main id="app">
+      <canvas id="game-canvas" aria-label="Varandil harita sahnesi"></canvas>
+
+      <!-- Yükleme -->
+      <section id="loading">
+        <img class="load-logo" src="assets/marka/logo-B-amblem.png" alt="Hükümdar" />
+        <p>Yedi kıta · Yüz bölge · Tek taç</p>
+        <div class="load-track"><i id="load-bar"></i></div>
+      </section>
+
+      <!-- Kurulum -->
+      <section id="setup">
+        <div class="setup-card">
+          <header>
+            <h1 class="logo-h1"><img src="assets/marka/logo-A-yazi.png" alt="HÜKÜMDAR — Yedi Kıta, Tek Taç" /></h1>
+            <p class="sub">Yedi diyar, yüz bölge, aralarında keşfedilmeyi bekleyen yabanlar. Her hane 3 bölgeyle başlar; herkesin bir <b>gizli hedefi</b> var.</p>
+          </header>
+          <div id="welcome"></div>
+          <div class="setup-row">
+            <h2>Oyuncu sayısı</h2>
+            <div id="count-pick"><button data-count="10" class="ghost">10 Hane</button><button data-count="15" class="ghost">15 Hane</button></div>
+          </div>
+          <h2>Haneler <small>· koltuğa tıklayarak İnsan / Yapay Zekâ seç</small></h2>
+          <div id="seat-grid"></div>
+          <h2>Ordular <small>· savaş ganimetiyle satın alınır</small></h2>
+          <div id="unit-preview"></div>
+          <footer>
+            <span id="seat-summary"></span>
+            <span id="map-info"></span>
+            <div class="setup-actions">
+              <button id="btn-start" class="gold big">Savaşı Başlat</button>
+            </div>
+          </footer>
+        </div>
+      </section>
+
+      <!-- Oyun içi arayüz -->
+      <section id="hud">
+        <div id="turn-banner">
+          <img id="turn-crest" alt="" />
+          <div class="tb-text">
+            <span id="turn-house"></span>
+            <span id="turn-kind"></span>
+          </div>
+          <span class="coin big" id="turn-gold">0</span>
+          <div id="phase-pills"></div>
+          <span id="turn-no"></span>
+        </div>
+
+        <div id="top-right">
+          <button id="btn-mission" class="gold">Gizli Hedefim</button>
+          <label>Hız
+            <select id="sel-speed">
+              <option value="yavas">Yavaş</option>
+              <option value="normal" selected>Normal</option>
+              <option value="hizli">Hızlı</option>
+              <option value="anlik">Anlık</option>
+            </select>
+          </label>
+          <label>Grafik
+            <select id="sel-quality">
+              <option value="ultra" selected>Ultra</option>
+              <option value="yuksek">Yüksek</option>
+              <option value="orta">Orta</option>
+            </select>
+          </label>
+          <button id="btn-help" class="ghost round" aria-label="Kurallar">?</button>
+        </div>
+
+        <aside id="houses">
+          <h3>Haneler</h3>
+          <ul id="house-list"></ul>
+          <h3>Diyarlar <small>tam hâkimiyet bonusu</small></h3>
+          <ul id="diyar-list"></ul>
+        </aside>
+
+        <ol id="log"></ol>
+        <div id="action-bar"></div>
+        <div id="battle"></div>
+      </section>
+
+      <div id="surprise"></div>
+      <div id="tooltip"></div>
+      <div id="toast"></div>
+
+      <div id="mission-modal" class="modal">
+        <div class="modal-card">
+          <h2>Gizli Hedef</h2>
+          <div id="mission-body"></div>
+          <button id="mission-close" class="gold">Kapat</button>
+        </div>
+      </div>
+
+      <div id="help-modal" class="modal">
+        <div class="modal-card wide">
+          <h2>Nasıl Oynanır?</h2>
+          <ol class="rules">
+            <li><b>Başlangıç:</b> Her hane 3 bölge ve 15 barbarla başlar. Kalan bölgeler <b>bağımsız krallıklardır</b>: saldırmazlar ama savunurlar ve zamanla güçlenirler.</li>
+            <li><b>Takviye:</b> Her tur bölge sayının üçte biri kadar (en az 3) ücretsiz barbar ve her bölge için 1 altın gelir. Bir diyarın tamamı seninse diyar bonusu ve +5 altın eklenir.</li>
+            <li><b>Ganimet:</b> Fethettiğin her bölge altın kazandırır: öldürülen birlik sayısı, kaleler +6, rakip hanenin hazinesinin dörtte biri.</li>
+            <li><b>Ordu:</b> Altınla birlik al. <b>Barbar</b> 3 altın. <b>Balista</b> 7 altın, saldırıda en yüksek zara +1. <b>Ejderhalı Şövalye</b> 12 altın, saldırıda en düşük zarı yeniden atar, savunmada +1.</li>
+            <li><b>Savaş:</b> Saldıran en fazla 3, savunan en fazla 2 zar atar. Beraberlikte savunan kazanır. Kalede savunana +1. Kayıplarda önce barbarlar düşer.</li>
+            <li><b>Yaban sürprizleri:</b> Bölgelerin arasındaki yabanlarda parlayan <b>?</b> işaretleri var. Saldırı aşamasında yanındaki bir bölgenden izci gönder (turda 2 keşif): hazine, kayıp lejyon, ejderha yumurtası çıkabilir… ama pusu, veba ve uyuyan ejderha da. Kullanılan sürprizlerin yerine zamanla yenileri doğar.</li>
+            <li><b>Gizli hedef:</b> Hedefini yalnızca sen görürsün. Hedefine ilk ulaşan hane dünyanın hükümdarı olur.</li>
+          </ol>
+          <p class="keys"><kbd>Sol tık</kbd> seç · <kbd>Sol sürükle</kbd> kaydır · <kbd>Sağ sürükle</kbd> döndür · <kbd>Tekerlek</kbd> yakınlaş · <kbd>Boşluk</kbd> saldır · <kbd>Esc</kbd> vazgeç</p>
+          <button id="help-close" class="gold">Anladım</button>
+        </div>
+      </div>
+
+      <div id="win" class="modal">
+        <div class="modal-card win-card">
+          <img id="win-crest" alt="" />
+          <p class="win-kicker">Varandil'in yeni hükümdarı</p>
+          <h1 id="win-title"></h1>
+          <p class="win-m">Gizli hedef: <span id="win-mission"></span></p>
+          <button id="win-again" class="gold big">Yeni Savaş</button>
+        </div>
+      </div>
+    </main>
+  </body>
+</html>
